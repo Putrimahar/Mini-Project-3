@@ -27,4 +27,9 @@ object MakananApi {
     val service: MakananApiService by lazy {
         retrofit.create(MakananApiService::class.java)
     }
+
+    fun getMakananUrl(gambar: String): String {
+        return "https://terrapin-precious-wildly.ngrok-free.app/storage/$gambar"
+    }
+
 }
