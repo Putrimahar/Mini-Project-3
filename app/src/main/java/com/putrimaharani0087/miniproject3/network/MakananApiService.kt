@@ -31,5 +31,6 @@ object MakananApi {
     fun getMakananUrl(gambar: String): String {
         return "https://terrapin-precious-wildly.ngrok-free.app/storage/$gambar"
     }
-
 }
+
+enum class ApiStatus{ LOADING, SUCCESS}
