@@ -14,7 +14,7 @@ import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.Part
 
-private const val BASE_URL = "https://terrapin-precious-wildly.ngrok-free.app/api/"
+private const val BASE_URL = "https://asessment3-api-production.up.railway.app/api/"
 
 private val moshi = Moshi.Builder()
     .add(KotlinJsonAdapterFactory())
@@ -46,7 +46,7 @@ object MakananApi {
     }
 
     fun getMakananUrl(gambar: String): String {
-        return "https://terrapin-precious-wildly.ngrok-free.app/storage/$gambar"
+        return "https://asessment3-api-production.up.railway.app/storage/$gambar"
     }
 }
 
