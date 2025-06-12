@@ -27,12 +27,14 @@ private val retrofit = Retrofit.Builder()
 
 interface MakananApiService {
     @GET("makanan")
-    suspend fun getMakanan(): List<Makanan>
+    suspend fun getMakanan(
+        @Header("Authorization") userId: String
+    ): List<Makanan>
 
     @Multipart
-    @POST("makanan")
-    suspend fun postHewan(
-        @Header("Authorization") id: String,
+    @POST("makanan/store")
+    suspend fun postMakanan(
+        @Header("Authorization") userId: String,
         @Part("nama") nama: RequestBody,
         @Part gambar: MultipartBody.Part
     ): OpStatus

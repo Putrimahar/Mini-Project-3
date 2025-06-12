@@ -27,15 +27,11 @@ class MainViewModel : ViewModel() {
     var errorMessage = mutableStateOf<String?>(null)
         private set
 
-    init {
-        retrieveData()
-    }
-
-    fun retrieveData() {
-        viewModelScope.launch (Dispatchers.IO){
+    fun retriveData(userId: String) {
+        viewModelScope.launch(Dispatchers.IO) {
             status.value = ApiStatus.LOADING
             try {
-                data.value = MakananApi.service.getMakanan()
+                data.value = MakananApi.service.getMakanan(userId)
                 status.value = ApiStatus.SUCCESS
             } catch (e: Exception) {
                 Log.d("MainViewModel", "Failure: ${e.message}")
@@ -44,22 +40,21 @@ class MainViewModel : ViewModel() {
         }
     }
 
-    fun saveData(id: String, nama: String, bitmap: Bitmap) {
-        viewModelScope.launch (Dispatchers.IO){
+    fun saveData(userId: String, nama: String, bitmap: Bitmap) {
+        viewModelScope.launch(Dispatchers.IO) {
             try {
-                val result = MakananApi.service.postHewan(
-                    id,
+                val result = MakananApi.service.postMakanan(
+                    userId,
                     nama.toRequestBody("text/plain".toMediaTypeOrNull()),
                     bitmap.toMultipartBody()
                 )
 
                 if (result.status == "success")
-                    retrieveData()
+                    retriveData(userId)
                 else
                     throw Exception(result.message)
             } catch (e: Exception) {
                 Log.d("MainViewModel", "Failure: ${e.message}")
-                errorMessage.value = "Error: ${e.message}"
             }
         }
     }
@@ -69,10 +64,10 @@ class MainViewModel : ViewModel() {
         compress(Bitmap.CompressFormat.JPEG, 80, stream)
         val byteArray = stream.toByteArray()
         val requestBody = byteArray.toRequestBody(
-            "image/jpg".toMediaTypeOrNull(),0, byteArray.size)
+            "image/jpg".toMediaTypeOrNull(), 0, byteArray.size)
         return MultipartBody.Part.createFormData(
-            "image", "image.jpg", requestBody
-        )
+            "gambar", "image.jpg", requestBody)
     }
+
     fun clearMessage() { errorMessage.value = null}
 }
