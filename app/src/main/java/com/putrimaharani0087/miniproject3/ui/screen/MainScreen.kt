@@ -87,10 +87,12 @@ fun MainScreen() {
     val user by dataStore.userFlow.collectAsState(User())
 
     var showDialog by remember { mutableStateOf(false) }
+    var showMakananDialog by remember { mutableStateOf(false) }
 
     var bitmap: Bitmap? by remember { mutableStateOf(null) }
     val launcher = rememberLauncherForActivityResult(CropImageContract()) {
         bitmap = getCroppedImage(context.contentResolver, it)
+        if (bitmap != null) showMakananDialog = true
     }
 
     Scaffold(
@@ -147,6 +149,14 @@ fun MainScreen() {
                 onDismissRequest = {showDialog = false}) {
                 CoroutineScope(Dispatchers.IO).launch { signOut(context,dataStore) }
                 showDialog = false
+            }
+        }
+        if (showMakananDialog) {
+            MakananDialog(
+                bitmap = bitmap,
+                onDismissRequest = { showMakananDialog = false }) { nama ->
+                Log.d("TAMBAH", "$nama ditambahkan")
+                showMakananDialog = false
             }
         }
     }
