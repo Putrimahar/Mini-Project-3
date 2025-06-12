@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Makanan Traditional</string>
+    <string name="app_name">Makanan Tradisional</string>
     <string name="gambar">Gambar %1$s</string>
     <string name="error">Gagal memuat data.. Koneksi error.</string>
     <string name="try_again">Coba lagi</string>
@@ -10,4 +10,7 @@
     <string name="nama">Nama</string>
     <string name="batal">Batal</string>
     <string name="simpan">Simpan</string>
+    <string name="hapus">Hapus</string>
+    <string name="konfirmasi_hapus">Konfirmasi hapus</string>
+    <string name="dialog_hapus">Hapus makanan?</string>
 </resources>

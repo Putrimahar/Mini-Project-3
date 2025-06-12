@@ -59,6 +59,26 @@ class MainViewModel : ViewModel() {
         }
     }
 
+    fun deleteData(userId: String, makananId: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val result = MakananApi.service.deleteMakanan(
+                    userId,
+                    makananId
+                )
+
+                if(result.status == "success"){
+                    retriveData(userId)
+                } else {
+                    throw Exception(result.message)
+                }
+            } catch (e: Exception) {
+                Log.d("MainViewModel", "Error delete: ${e.message}")
+                errorMessage.value = "Error: ${e.message}"
+            }
+        }
+    }
+
     private fun Bitmap.toMultipartBody(): MultipartBody.Part {
         val stream = ByteArrayOutputStream()
         compress(Bitmap.CompressFormat.JPEG, 80, stream)
