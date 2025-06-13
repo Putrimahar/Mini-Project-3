@@ -13,4 +13,8 @@
     <string name="hapus">Hapus</string>
     <string name="konfirmasi_hapus">Konfirmasi hapus</string>
     <string name="dialog_hapus">Hapus makanan?</string>
+    <string name="pilih_gambar">Pilih gambar</string>
+    <string name="pilih_sumber_gambar">Pilih sumber gambar</string>
+    <string name="galeri">Galeri</string>
+    <string name="kamera">Kamera</string>
 </resources>

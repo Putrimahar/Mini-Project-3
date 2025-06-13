@@ -46,6 +46,15 @@ interface MakananApiService {
         @Header("Authorization") userId: String,
         @Path("id") id: String
     ): OpStatus
+
+    @Multipart
+    @POST("makanan/edit/{id}")
+    suspend fun editMakanan(
+        @Header("Authorization") userId: String,
+        @Path("id") id: String,
+        @Part("nama") nama: RequestBody,
+        @Part gambar: MultipartBody.Part
+    ): OpStatus
 }
 
 object MakananApi {

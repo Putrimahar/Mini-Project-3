@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.graphics.ImageDecoder
+import android.graphics.drawable.BitmapDrawable
 import android.os.Build
 import android.provider.MediaStore
 import android.util.Log
@@ -29,6 +30,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -208,6 +210,11 @@ fun ScreenContent(viewModel: MainViewModel, userId: String, modifier: Modifier =
                         makanan = it,
                         onDelete = { id ->
                             viewModel.deleteData(userId, id)
+                        },
+                        onEdit = { id, nama, bitmap ->
+                            if (bitmap != null) {
+                                viewModel.updateData(userId, id, nama, bitmap)
+                            }
                         }
                     )
                 }
@@ -236,9 +243,12 @@ fun ScreenContent(viewModel: MainViewModel, userId: String, modifier: Modifier =
 @Composable
 fun ListItem(
     makanan: Makanan,
-    onDelete: (String) -> Unit
+    onDelete: (String) -> Unit,
+    onEdit: (String, String, Bitmap?) -> Unit
 ) {
     var showDialogDelete by remember { mutableStateOf(false) }
+    var showDialogEdit by remember { mutableStateOf(false) }
+    var currentBitmap by remember { mutableStateOf<Bitmap?>(null) }
 
     Box (
         modifier = Modifier.padding(4.dp).border(1.dp, Color.Gray),
@@ -253,7 +263,14 @@ fun ListItem(
             contentScale = ContentScale.Crop,
             placeholder = painterResource(id = R.drawable.loading_img),
             error = painterResource(id = R.drawable.baseline_broken_image_24),
-            modifier = Modifier.fillMaxWidth().padding(4.dp)
+            modifier = Modifier.fillMaxWidth().padding(4.dp),
+            onSuccess = { result ->
+                val drawable = result.result.drawable
+                if (drawable is BitmapDrawable) {
+                    currentBitmap = drawable.bitmap
+                }
+            }
+
         )
         Column (
             modifier = Modifier
@@ -270,7 +287,8 @@ fun ListItem(
                 Text(
                     text = makanan.nama,
                     fontWeight = FontWeight.Bold,
-                    color = Color.White
+                    color = Color.White,
+                    modifier = Modifier.weight(1f)
                 )
 
                 if (makanan.mine == 1) {
@@ -285,11 +303,22 @@ fun ListItem(
                             tint = Color.White
                         )
                     }
+                    Spacer(modifier = Modifier.width(2.dp))
+                    IconButton(
+                        onClick = { showDialogEdit = true },
+                        modifier = Modifier
+                            .background(Color(0f, 0f, 0f, 0.5f), shape = CircleShape)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Edit,
+                            contentDescription = "Edit",
+                            tint = Color.White
+                        )
+                    }
                 }
             }
         }
 
-        // Delete Dialog
         if (showDialogDelete) {
             AlertDialog(
                 onDismissRequest = { showDialogDelete = false },
@@ -333,6 +362,18 @@ fun ListItem(
                 shape = MaterialTheme.shapes.large,
                 containerColor = MaterialTheme.colorScheme.surface,
                 tonalElevation = 4.dp
+            )
+        }
+
+        if(showDialogEdit){
+            EditMakananDialog(
+                initialNama = makanan.nama,
+                initialBitmap = currentBitmap,
+                onDismissRequest = { showDialogEdit = false },
+                onConfirmation = { nama, bitmap ->
+                    showDialogEdit = false
+                    onEdit(makanan.id, nama, bitmap)
+                }
             )
         }
 
